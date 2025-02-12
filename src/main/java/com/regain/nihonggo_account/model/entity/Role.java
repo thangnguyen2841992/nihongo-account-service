@@ -9,7 +9,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@NoArgsConstructor
 @Data
 public class Role {
     @Id
@@ -17,6 +16,9 @@ public class Role {
     private Long roleId;
 
     private String name;
+
+    public Role() {
+    }
 
     public Role(String name) {
         this.name = name;

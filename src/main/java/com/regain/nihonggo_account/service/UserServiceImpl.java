@@ -53,7 +53,7 @@ public class UserServiceImpl implements IUserService{
                 }
                 Set<Role> roles = new HashSet<>();
                 for (int i = 0; i < userDTO.getRole().length; i++) {
-                    Optional<Role> roleOptional = this.roleRepository.findByNameContaining(userDTO.getRole()[i]);
+                    Optional<Role> roleOptional = this.roleRepository.findByName(userDTO.getRole()[i]);
                     roleOptional.ifPresent(role -> roles.add(new Role(role.getRoleId(), role.getName())));
                 }
                 user.setRoles(roles);
