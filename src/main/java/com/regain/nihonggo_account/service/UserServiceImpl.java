@@ -11,14 +11,13 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
 @Service
-public class UserServiceImpl implements IUserService{
+public class UserServiceImpl implements IUserService {
 
     @Autowired
     private IUserRepository userRepository;
@@ -32,32 +31,49 @@ public class UserServiceImpl implements IUserService{
 
     @Override
     public String register(UserDTO userDTO) {
-            if (!userDTO.getConfirmPassword().equals(userDTO.getPassword())) {
-                return "Passwords do not match";
-            } else {
-                User user = new User();
-                user.setUsername(userDTO.getUsername());
-                user.setPassword(passwordEncoder.encode(userDTO.getConfirmPassword()));
-                user.setEmail(userDTO.getEmail());
-                user.setPhone(userDTO.getPhone());
-                user.setAddress(userDTO.getAddress());
-                user.setFullName(userDTO.getFirstName() + " " + userDTO.getLastName());
-                user.setGender(userDTO.getGender());
-                user.setDateCreated(new Date());
-                SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
-                try {
-                    Date birthDate = formatter.parse(userDTO.getBirthday());
-                    user.setBirthday(birthDate);
-                } catch (ParseException e) {
-                    return "Invalid birthday";
-                }
-                Set<Role> roles = new HashSet<>();
-                for (int i = 0; i < userDTO.getRole().length; i++) {
-                    Optional<Role> roleOptional = this.roleRepository.findByName(userDTO.getRole()[i]);
-                    roleOptional.ifPresent(role -> roles.add(new Role(role.getRoleId(), role.getName())));
-                }
-                user.setRoles(roles);
+        if (!userDTO.getConfirmPassword().equals(userDTO.getPassword())) {
+            return "Passwords do not match";
+        } else {
+            User user = new User();
+            user.setUsername(userDTO.getUsername());
+            user.setPassword(passwordEncoder.encode(userDTO.getConfirmPassword()));
+            user.setEmail(userDTO.getEmail());
+            user.setPhone(userDTO.getPhone());
+            user.setAddress(userDTO.getAddress());
+            user.setFullName(userDTO.getFirstName() + " " + userDTO.getLastName());
+            user.setGender(userDTO.getGender());
+            user.setDateCreated(new Date());
+            SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+            try {
+                Date birthDate = formatter.parse(userDTO.getBirthday());
+                user.setBirthday(birthDate);
+            } catch (ParseException e) {
+                return "Invalid birthday";
             }
-            return "User registered successfully";
+            Set<Role> roles = new HashSet<>();
+            for (int i = 0; i < userDTO.getRole().length; i++) {
+                Optional<Role> roleOptional = this.roleRepository.findByName(userDTO.getRole()[i]);
+                roleOptional.ifPresent(role -> roles.add(new Role(role.getRoleId(), role.getName())));
+            }
+            user.setRoles(roles);
+            user.setAvatar("defaultAvatar.jpg");
+            this.userRepository.save(user);
+        }
+        return "User registered successfully";
     }
+
+    @Override
+    public String activeAccount(String username) {
+        Optional<User> userOptional = this.userRepository.findByUsernameContaining(username);
+        if (userOptional.isEmpty()) {
+            return "User not found";
+        } else {
+            User user = userOptional.get();
+            user.setActive(true);
+            this.userRepository.saveAndFlush(user);
+        }
+        return "Active Account successfully";
+    }
+
+
 }
