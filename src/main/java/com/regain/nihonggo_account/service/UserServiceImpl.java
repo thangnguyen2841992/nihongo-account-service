@@ -69,6 +69,9 @@ public class UserServiceImpl implements IUserService {
             return "User not found";
         } else {
             User user = userOptional.get();
+            if (user.isActive()) {
+                return "User is already active";
+            }
             user.setActive(true);
             this.userRepository.saveAndFlush(user);
         }

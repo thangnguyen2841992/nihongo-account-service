@@ -32,7 +32,7 @@ public class UserRestController {
         return result;
     }
 
-    @PostMapping("/active")
+    @PutMapping("/active")
     public String active(@RequestParam(name = "username") String username) {
         return this.userService.activeAccount(username);
     }
