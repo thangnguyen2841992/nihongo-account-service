@@ -11,10 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements IUserService {
@@ -78,5 +75,29 @@ public class UserServiceImpl implements IUserService {
         return "Active Account successfully";
     }
 
+    @Override
+    public List<UserDTO> getUsers() {
+        List<User> users = this.userRepository.findAll();
+        List<UserDTO> userDTOS = new ArrayList<>();
+        for (User user : users) {
+            UserDTO userDTO = new UserDTO();
+            userDTO.setUserId(user.getUserId());
+            userDTO.setUsername(user.getUsername());
+            userDTO.setPassword(user.getPassword());
+            userDTO.setAvatar(user.getAvatar());
+            userDTO.setFullName(user.getFullName());
+            userDTO.setGender(user.getGender());
+            userDTO.setBirthday(formatDateToString(user.getBirthday()));
+            userDTO.setDateCreated(formatDateToString(user.getDateCreated()));
+            userDTO.setEmail(user.getEmail());
+            userDTO.setPhone(user.getPhone());
+            userDTOS.add(userDTO);
+        }
+        return userDTOS;
+    }
 
+    private String formatDateToString(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy");
+        return formatter.format(date);
+    }
 }

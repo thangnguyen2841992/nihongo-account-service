@@ -8,8 +8,9 @@ import com.regain.nihonggo_account.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
-@RequestMapping("/users")
 @CrossOrigin("*")
 public class UserRestController {
     @Autowired
@@ -35,6 +36,11 @@ public class UserRestController {
     @PutMapping("/active")
     public String active(@RequestParam(name = "username") String username) {
         return this.userService.activeAccount(username);
+    }
+
+    @GetMapping("/getAllUsers")
+    public List<UserDTO> getAllUsers() {
+        return this.userService.getUsers();
     }
 
 

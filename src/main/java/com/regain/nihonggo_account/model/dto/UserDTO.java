@@ -29,6 +29,8 @@ public class UserDTO {
 
     private String lastName;
 
+    private String fullName;
+
     private String gender;
 
     private String birthday;
@@ -150,4 +152,8 @@ public class UserDTO {
     public void setRole(String[] role) {
         this.role = role;
     }
+
+    public String getFullName() {return fullName;}
+
+    public void setFullName(String fullName) {this.fullName = fullName;}
 }
